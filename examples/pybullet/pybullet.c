@@ -9726,8 +9726,6 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 	PyObject* linkJointAxisObj = 0;
 	PyObject* linkInertialFramePositionObj = 0;
 	PyObject* linkInertialFrameOrientationObj = 0;
-	PyObject* linkLowerLimitsObj = 0;
-	PyObject* linkUpperLimitsObj = 0;
 	PyObject* objBatchPositions = 0;
 	
 
@@ -9735,13 +9733,13 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 		"baseMass", "baseCollisionShapeIndex", "baseVisualShapeIndex", "basePosition", "baseOrientation",
 		"baseInertialFramePosition", "baseInertialFrameOrientation", "linkMasses", "linkCollisionShapeIndices",
 		"linkVisualShapeIndices", "linkPositions", "linkOrientations", "linkInertialFramePositions", "linkInertialFrameOrientations", "linkParentIndices",
-		"linkJointTypes", "linkJointAxis", "linkLowerLimits", "linkUpperLimits", "useMaximalCoordinates", "flags", "batchPositions", "physicsClientId", NULL};
+		"linkJointTypes", "linkJointAxis", "useMaximalCoordinates", "flags", "batchPositions", "physicsClientId", NULL};
 
-	if (!PyArg_ParseTupleAndKeywords(args, keywds, "|diiOOOOOOOOOOOOOOOOiiOi", kwlist,
+	if (!PyArg_ParseTupleAndKeywords(args, keywds, "|diiOOOOOOOOOOOOOOiiOi", kwlist,
 									 &baseMass, &baseCollisionShapeIndex, &baseVisualShapeIndex, &basePosObj, &baseOrnObj,
 									 &baseInertialFramePositionObj, &baseInertialFrameOrientationObj, &linkMassesObj, &linkCollisionShapeIndicesObj,
 									 &linkVisualShapeIndicesObj, &linkPositionsObj, &linkOrientationsObj, &linkInertialFramePositionObj, &linkInertialFrameOrientationObj, &linkParentIndicesObj,
-									 &linkJointTypesObj, &linkJointAxisObj, &linkLowerLimitsObj, &linkUpperLimitsObj, &useMaximalCoordinates, &flags, &objBatchPositions, &physicsClientId))
+									 &linkJointTypesObj, &linkJointAxisObj, &useMaximalCoordinates, &flags, &objBatchPositions, &physicsClientId))
 	{
 		return NULL;
 	}
@@ -9764,8 +9762,6 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 		int numLinkJoinAxis = linkJointAxisObj ? PySequence_Size(linkJointAxisObj) : 0;
 		int numLinkInertialFramePositions = linkInertialFramePositionObj ? PySequence_Size(linkInertialFramePositionObj) : 0;
 		int numLinkInertialFrameOrientations = linkInertialFrameOrientationObj ? PySequence_Size(linkInertialFrameOrientationObj) : 0;
-		int numLinkLowerLimits = linkLowerLimitsObj ? PySequence_Size(linkLowerLimitsObj) : 0;
-		int numLinkUpperLimits = linkUpperLimitsObj ? PySequence_Size(linkUpperLimitsObj) : 0;
 		int numBatchPositions = objBatchPositions ? PySequence_Size(objBatchPositions) : 0;
 
 		PyObject* seqLinkMasses = linkMassesObj ? PySequence_Fast(linkMassesObj, "expected a sequence") : 0;
@@ -9779,8 +9775,6 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 		PyObject* seqLinkInertialFramePositions = linkInertialFramePositionObj ? PySequence_Fast(linkInertialFramePositionObj, "expected a sequence") : 0;
 		PyObject* seqLinkInertialFrameOrientations = linkInertialFrameOrientationObj ? PySequence_Fast(linkInertialFrameOrientationObj, "expected a sequence") : 0;
 
-		PyObject* seqLinkLowerLimits = linkLowerLimitsObj ? PySequence_Fast(linkLowerLimitsObj, "expected a sequence") : 0;
-		PyObject* seqLinkUpperLimits = linkUpperLimitsObj ? PySequence_Fast(linkUpperLimitsObj, "expected a sequence") : 0;
 		PyObject* seqBatchPositions = objBatchPositions ? PySequence_Fast(objBatchPositions, "expected a sequence") : 0;
 
 		if ((numLinkMasses == numLinkCollisionShapes) &&
@@ -9790,8 +9784,6 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 			(numLinkMasses == numLinkParentIndices) &&
 			(numLinkMasses == numLinkJointTypes) &&
 			(numLinkMasses == numLinkJoinAxis) &&
-			(numLinkMasses == numLinkLowerLimits) &&
-			(numLinkMasses == numLinkUpperLimits) &&
 			(numLinkMasses == numLinkInertialFramePositions) &&
 			(numLinkMasses == numLinkInertialFrameOrientations))
 		{
@@ -9835,8 +9827,6 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 				int linkParentIndex;
 				int linkJointType;
 				const char* linkName;
-				double linkLowerLimit = pybullet_internalGetFloatFromSequence(seqLinkLowerLimits, i);
-				double linkUpperLimit = pybullet_internalGetFloatFromSequence(seqLinkUpperLimits, i);
 
 				pybullet_internalGetVector3FromSequence(seqLinkInertialFramePositions, i, linkInertialFramePosition);
 				pybullet_internalGetVector4FromSequence(seqLinkInertialFrameOrientations, i, linkInertialFrameOrientation);
@@ -9856,9 +9846,7 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 									  linkInertialFrameOrientation,
 									  linkParentIndex,
 									  linkJointType,
-									  linkJointAxis,
-                                      linkLowerLimit,
-                                      linkUpperLimit);
+									  linkJointAxis);
 			}
 
 			if (seqLinkMasses)
@@ -9877,10 +9865,6 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 				Py_DECREF(seqLinkJointTypes);
 			if (seqLinkJoinAxis)
 				Py_DECREF(seqLinkJoinAxis);
-			if (seqLinkLowerLimits)
-				Py_DECREF(seqLinkLowerLimits);
-			if (seqLinkUpperLimits)
-				Py_DECREF(seqLinkUpperLimits);
 			if (seqLinkInertialFramePositions)
 				Py_DECREF(seqLinkInertialFramePositions);
 			if (seqLinkInertialFrameOrientations)
@@ -9936,10 +9920,6 @@ static PyObject* pybullet_createMultiBody(PyObject* self, PyObject* args, PyObje
 				Py_DECREF(seqLinkJointTypes);
 			if (seqLinkJoinAxis)
 				Py_DECREF(seqLinkJoinAxis);
-			if (seqLinkLowerLimits)
-				Py_DECREF(seqLinkLowerLimits);
-			if (seqLinkUpperLimits)
-				Py_DECREF(seqLinkUpperLimits);
 			if (seqLinkInertialFramePositions)
 				Py_DECREF(seqLinkInertialFramePositions);
 			if (seqLinkInertialFrameOrientations)

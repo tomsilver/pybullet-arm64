@@ -3155,7 +3155,7 @@ public static extern  int b3CreateMultiBodyBase(IntPtr commandHandle, double mas
     ///linkJointType: int
     ///linkJointAxis: double*
     [System.Runtime.InteropServices.DllImportAttribute(dllName, EntryPoint="b3CreateMultiBodyLink")]
-public static extern  int b3CreateMultiBodyLink(IntPtr commandHandle, double linkMass, double linkCollisionShapeIndex, double linkVisualShapeIndex, ref double linkPosition, ref double linkOrientation, ref double linkInertialFramePosition, ref double linkInertialFrameOrientation, int linkParentIndex, int linkJointType, ref double linkJointAxis, double linkLowerLimit, double linkUpperLimit) ;
+public static extern  int b3CreateMultiBodyLink(IntPtr commandHandle, double linkMass, double linkCollisionShapeIndex, double linkVisualShapeIndex, ref double linkPosition, ref double linkOrientation, ref double linkInertialFramePosition, ref double linkInertialFrameOrientation, int linkParentIndex, int linkJointType, ref double linkJointAxis) ;
 
     
     /// Return Type: void

@@ -556,13 +556,11 @@ struct b3RobotSimulatorCreateMultiBodyArgs
 	int *m_linkParentIndices;
 	int *m_linkJointTypes;
 	btVector3 *m_linkJointAxes;
-	double *m_linkLowerLimits;
-	double *m_linkUpperLimits;
 	btAlignedObjectArray<btVector3> m_batchPositions;
 	int m_useMaximalCoordinates;
 
 	b3RobotSimulatorCreateMultiBodyArgs()
-		: m_baseMass(0), m_baseCollisionShapeIndex(-1), m_baseVisualShapeIndex(-1), m_numLinks(0), m_linkMasses(NULL), m_linkCollisionShapeIndices(NULL), m_linkVisualShapeIndices(NULL), m_linkPositions(NULL), m_linkOrientations(NULL), m_linkInertialFramePositions(NULL), m_linkInertialFrameOrientations(NULL), m_linkParentIndices(NULL), m_linkJointTypes(NULL), m_linkJointAxes(NULL), m_linkLowerLimits(NULL), m_linkUpperLimits(NULL), m_useMaximalCoordinates(0)
+		: m_baseMass(0), m_baseCollisionShapeIndex(-1), m_baseVisualShapeIndex(-1), m_numLinks(0), m_linkMasses(NULL), m_linkCollisionShapeIndices(NULL), m_linkVisualShapeIndices(NULL), m_linkPositions(NULL), m_linkOrientations(NULL), m_linkInertialFramePositions(NULL), m_linkInertialFrameOrientations(NULL), m_linkParentIndices(NULL), m_linkJointTypes(NULL), m_linkJointAxes(NULL), m_useMaximalCoordinates(0)
 	{
 		m_basePosition.setValue(0, 0, 0);
 		m_baseOrientation.setValue(0, 0, 0, 1);

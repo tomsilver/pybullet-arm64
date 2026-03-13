@@ -1067,8 +1067,6 @@ struct b3CreateMultiBodyArgs
 	int m_linkParentIndices[MAX_CREATE_MULTI_BODY_LINKS];
 	int m_linkJointTypes[MAX_CREATE_MULTI_BODY_LINKS];
 	double m_linkJointAxis[3 * MAX_CREATE_MULTI_BODY_LINKS];
-	double m_linkLowerLimits[MAX_CREATE_MULTI_BODY_LINKS];
-	double m_linkUpperLimits[MAX_CREATE_MULTI_BODY_LINKS];
 	int m_flags;
 	int m_numBatchObjects;
 
