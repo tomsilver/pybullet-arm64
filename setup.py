@@ -504,13 +504,18 @@ if 'BT_USE_EGL' in EGL_CXX_FLAGS:
   extensions.append(eglRender)
 
 setup(
-    name='pybullet',
-    version='3.2.5',
+    name='pybullet-arm64',
+    version='3.2.6',
     description=
-    'Official Python Interface for the Bullet Physics SDK specialized for Robotics Simulation and Reinforcement Learning',
+    'Maintained fork of pybullet with macOS arm64 build fix. Drop-in replacement for pybullet.',
     long_description=
-    'pybullet is an easy to use Python module for physics simulation, robotics and deep reinforcement learning based on the Bullet Physics SDK. With pybullet you can load articulated bodies from URDF, SDF and other file formats. pybullet provides forward dynamics simulation, inverse dynamics computation, forward and inverse kinematics and collision detection and ray intersection queries. Aside from physics simulation, pybullet supports to rendering, with a CPU renderer and OpenGL visualization and support for virtual reality headsets.',
-    url='https://github.com/bulletphysics/bullet3',
+    'pybullet-arm64 is a maintained fork of pybullet that fixes building on macOS (Apple Silicon / arm64). '
+    'It is a drop-in replacement: install pybullet-arm64 and use "import pybullet" as usual. '
+    'pybullet is an easy to use Python module for physics simulation, robotics and deep reinforcement learning based on the Bullet Physics SDK. '
+    'With pybullet you can load articulated bodies from URDF, SDF and other file formats. pybullet provides forward dynamics simulation, '
+    'inverse dynamics computation, forward and inverse kinematics and collision detection and ray intersection queries. '
+    'Aside from physics simulation, pybullet supports rendering, with a CPU renderer and OpenGL visualization and support for virtual reality headsets.',
+    url='https://github.com/tomsilver/pybullet-arm64',
     author='Erwin Coumans, Yunfei Bai, Jasmine Hsu',
     author_email='erwincoumans@google.com',
     license='zlib',
