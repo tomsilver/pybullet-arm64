@@ -71,10 +71,13 @@ jobs:
       - name: Test wheels
         shell: bash
         run: |
-          for whl in wheelhouse/*.whl; do
-            echo "==> Testing ${whl}..."
-            uv run --with "${whl}" --no-project \
-              python -c "import pybullet as p; c = p.connect(p.DIRECT); p.disconnect(); print('OK')"
+          for pyver in 3.10 3.11 3.12 3.13; do
+            whl=$(ls wheelhouse/*-cp${pyver/./}-*.whl 2>/dev/null | head -1)
+            if [[ -n "$whl" ]]; then
+              echo "==> Testing ${whl} with Python ${pyver}..."
+              uv run --python "${pyver}" --with "${whl}" --no-project \
+                python -c "import pybullet as p; c = p.connect(p.DIRECT); p.disconnect(); print('OK')"
+            fi
           done
 
       - uses: actions/upload-artifact@v4
