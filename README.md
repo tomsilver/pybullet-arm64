@@ -23,17 +23,12 @@ p.disconnect()
 ## Publishing a new version to PyPI
 
 1. Update the version in `setup.py` (the `version=` argument in the `setup()` call).
-2. Build the sdist and wheel:
+2. Push to `main`. CI will build wheels for all platforms (Linux x86_64/aarch64, macOS arm64, Windows AMD64) and Python 3.10–3.13.
+3. Once CI passes, run:
    ```
-   pip install build twine
-   rm -rf dist/ build/
-   python -m build
+   ./publish.sh
    ```
-3. Upload to PyPI:
-   ```
-   twine upload dist/*
-   ```
-   You will need PyPI credentials with access to the `pybullet-arm64` project.
+   This downloads the CI-built wheels and uploads them to PyPI. You will need PyPI credentials with access to the `pybullet-arm64` project.
 
 ## What changed from upstream
 
