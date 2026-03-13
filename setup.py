@@ -507,7 +507,7 @@ if 'BT_USE_EGL' in EGL_CXX_FLAGS:
 
 setup(
     name='pybullet-arm64',
-    version='3.2.7',
+    version='3.2.8',
     description=
     'Maintained fork of pybullet with macOS arm64 build fix. Drop-in replacement for pybullet.',
     long_description=

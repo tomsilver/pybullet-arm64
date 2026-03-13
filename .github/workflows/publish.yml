@@ -7,45 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Test on ${{ matrix.os }} / Python ${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-14, windows-latest]
-        python-version: ["3.10", "3.12"]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install numpy
-        run: python -m pip install numpy
-
-      - name: Build and install
-        run: python -m pip install -v .
-
-      - name: Test import and basic functionality
-        run: |
-          python -c "
-          import pybullet as p
-          physics_client = p.connect(p.DIRECT)
-          p.setGravity(0, 0, -10)
-          print('pybullet version:', p.getAPIVersion())
-          print('gravity:', p.getPhysicsEngineParameters()['gravityAccelerationX'],
-                p.getPhysicsEngineParameters()['gravityAccelerationY'],
-                p.getPhysicsEngineParameters()['gravityAccelerationZ'])
-          p.disconnect()
-          print('All tests passed!')
-          "
-
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    needs: [test]
+  build:
+    name: Build and test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -98,9 +61,8 @@ jobs:
           name: wheels-${{ matrix.os }}
           path: ./wheelhouse/*.whl
 
-  build_sdist:
+  sdist:
     name: Build source distribution
-    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
