@@ -68,6 +68,19 @@ jobs:
             uv build --python "${pyver}" --wheel --out-dir wheelhouse
           done
 
+      - name: Repair Linux wheels with auditwheel
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          uv tool install auditwheel
+          mkdir -p wheelhouse_repaired
+          for whl in wheelhouse/*.whl; do
+            echo "==> Repairing ${whl}..."
+            auditwheel repair "$whl" --plat manylinux_2_17_x86_64 -w wheelhouse_repaired
+          done
+          rm -rf wheelhouse
+          mv wheelhouse_repaired wheelhouse
+
       - name: Test wheels
         shell: bash
         run: |
