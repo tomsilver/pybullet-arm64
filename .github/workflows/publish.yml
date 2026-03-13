@@ -55,16 +55,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pypa/cibuildwheel@v2.23
-        env:
-          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
-          CIBW_SKIP: "*-musllinux_*"
-          CIBW_ARCHS_MACOS: "arm64"
-          CIBW_ARCHS_LINUX: "x86_64 aarch64"
-          CIBW_ARCHS_WINDOWS: "AMD64"
-          CIBW_TEST_COMMAND: >
-            python -c "import pybullet as p; c = p.connect(p.DIRECT); p.disconnect(); print('OK')"
-          CIBW_TEST_SKIP: "*-manylinux_aarch64"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Build wheels
+        shell: bash
+        run: |
+          mkdir -p wheelhouse
+          for pyver in 3.10 3.11 3.12 3.13; do
+            echo "==> Building wheel for Python ${pyver}..."
+            rm -rf build/
+            uv build --python "${pyver}" --wheel --out-dir wheelhouse
+          done
+
+      - name: Test wheels
+        shell: bash
+        run: |
+          for whl in wheelhouse/*.whl; do
+            echo "==> Testing ${whl}..."
+            uv run --with "${whl}" --no-project \
+              python -c "import pybullet as p; c = p.connect(p.DIRECT); p.disconnect(); print('OK')"
+          done
 
       - uses: actions/upload-artifact@v4
         with:
@@ -78,12 +89,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Build sdist
-        run: pip install build && python -m build --sdist
+        run: uv build --sdist
 
       - uses: actions/upload-artifact@v4
         with:
