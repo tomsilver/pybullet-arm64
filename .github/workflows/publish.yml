@@ -73,7 +73,7 @@ jobs:
           for pybin in /opt/python/cp31{0,1,2,3}-*/bin; do
             pyver=$("${pybin}/python" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
             cpver="cp${pyver/./}"
-            whl=$(ls wheelhouse/*-${cpver}-*.whl 2>/dev/null | head -1)
+            whl=$(ls raw_wheels/*-${cpver}-*.whl 2>/dev/null | head -1)
             if [[ -n "$whl" ]]; then
               echo "==> Testing ${whl}..."
               "${pybin}/pip" install "${whl}"
