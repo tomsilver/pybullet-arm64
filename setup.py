@@ -431,7 +431,9 @@ elif _platform == "win32":
   +["examples/ThirdPartyLibs/glad/gl.c"]
 elif _platform == "darwin":
   print("darwin!")
-  os.environ['LDFLAGS'] = '-framework Cocoa -mmacosx-version-min=10.7 -stdlib=libc++ -framework OpenGL'
+  import subprocess
+  sdk_path = subprocess.check_output(['xcrun', '--show-sdk-path'], text=True).strip()
+  os.environ['LDFLAGS'] = f'-L{sdk_path}/usr/lib -F{sdk_path}/System/Library/Frameworks -framework Cocoa -mmacosx-version-min=10.7 -stdlib=libc++ -framework OpenGL'
   CXX_FLAGS += '-DB3_NO_PYTHON_FRAMEWORK '
   CXX_FLAGS += '-DHAS_SOCKLEN_T '
   CXX_FLAGS += '-D_DARWIN '
