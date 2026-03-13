@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14, windows-latest]
+        os: [macos-14, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -31,19 +31,6 @@ jobs:
             uv build --python "${pyver}" --wheel --out-dir wheelhouse
           done
 
-      - name: Repair Linux wheels with auditwheel
-        if: runner.os == 'Linux'
-        shell: bash
-        run: |
-          uv tool install auditwheel
-          mkdir -p wheelhouse_repaired
-          for whl in wheelhouse/*.whl; do
-            echo "==> Repairing ${whl}..."
-            auditwheel repair "$whl" --plat manylinux_2_17_x86_64 -w wheelhouse_repaired
-          done
-          rm -rf wheelhouse
-          mv wheelhouse_repaired wheelhouse
-
       - name: Test wheels
         shell: bash
         run: |
@@ -59,6 +46,45 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+  build-linux:
+    name: Build and test on Linux
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux_2_28_x86_64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and repair wheels
+        run: |
+          mkdir -p wheelhouse
+          for pybin in /opt/python/cp31{0,1,2,3}-*/bin; do
+            echo "==> Building with ${pybin}..."
+            rm -rf build/
+            "${pybin}/pip" wheel . --no-deps -w raw_wheels/
+          done
+          for whl in raw_wheels/*.whl; do
+            echo "==> Repairing ${whl}..."
+            auditwheel repair "$whl" --plat manylinux_2_28_x86_64 -w wheelhouse
+          done
+
+      - name: Test wheels
+        run: |
+          for pybin in /opt/python/cp31{0,1,2,3}-*/bin; do
+            pyver=$("${pybin}/python" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+            cpver="cp${pyver/./}"
+            whl=$(ls wheelhouse/*-${cpver}-*.whl 2>/dev/null | head -1)
+            if [[ -n "$whl" ]]; then
+              echo "==> Testing ${whl}..."
+              "${pybin}/pip" install "${whl}"
+              "${pybin}/python" -c "import pybullet as p; c = p.connect(p.DIRECT); p.disconnect(); print('OK')"
+              "${pybin}/pip" uninstall -y pybullet-arm64
+            fi
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux
           path: ./wheelhouse/*.whl
 
   sdist:
