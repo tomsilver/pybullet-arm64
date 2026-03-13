@@ -58,7 +58,8 @@ jobs:
       - name: Build and repair wheels
         run: |
           mkdir -p wheelhouse
-          for pybin in /opt/python/cp31{0,1,2,3}-*/bin; do
+          for pybin in /opt/python/cp3{10,11,12,13}-cp3{10,11,12,13}/bin; do
+            [ -d "$pybin" ] || continue
             echo "==> Building with ${pybin}..."
             rm -rf build/
             "${pybin}/pip" wheel . --no-deps -w raw_wheels/
@@ -70,7 +71,8 @@ jobs:
 
       - name: Test wheels
         run: |
-          for pybin in /opt/python/cp31{0,1,2,3}-*/bin; do
+          for pybin in /opt/python/cp3{10,11,12,13}-cp3{10,11,12,13}/bin; do
+            [ -d "$pybin" ] || continue
             pyver=$("${pybin}/python" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
             cpver="cp${pyver/./}"
             whl=$(ls raw_wheels/*-${cpver}-*.whl 2>/dev/null | head -1)
